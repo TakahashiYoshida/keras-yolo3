@@ -2,18 +2,24 @@ import sys
 import argparse
 from yolo import YOLO, detect_video
 from PIL import Image
+import glob
+import os
 
 def detect_img(yolo):
-    while True:
-        img = input('Input image filename:')
+    test_list=glob.glob("yolo_test/*.jpg")
+    for img in test_list:
+        #img = input('Input image filename:')
+        filename=os.path.splitext(os.path.basename(img))[0]
         try:
             image = Image.open(img)
         except:
             print('Open Error! Try again!')
             continue
         else:
+
             r_image = yolo.detect_image(image)
-            r_image.show()
+            #r_image.show()
+            r_image.save("yolo_result/"+filename+".png")
     yolo.close_session()
 
 FLAGS = None
@@ -25,17 +31,17 @@ if __name__ == '__main__':
     Command line options
     '''
     parser.add_argument(
-        '--model', type=str,
+        '--model_path', type=str,
         help='path to model weight file, default ' + YOLO.get_defaults("model_path")
     )
 
     parser.add_argument(
-        '--anchors', type=str,
+        '--anchors_path', type=str,
         help='path to anchor definitions, default ' + YOLO.get_defaults("anchors_path")
     )
 
     parser.add_argument(
-        '--classes', type=str,
+        '--classes_path', type=str,
         help='path to class definitions, default ' + YOLO.get_defaults("classes_path")
     )
 
